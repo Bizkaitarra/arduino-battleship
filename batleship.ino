@@ -22,6 +22,10 @@ String lcdText = "";
 String lastCoordinates = "";
 
 int currentPhase = PREPARATION_PHASE;
+
+/*Game with 4 ship with size one and 4 with size two*/
+int bigShip[2] = {1,2};
+int smallShips[4]  = {10, 13, 5, 25};
  
 void setup() {
   Serial.begin(9600);
@@ -35,6 +39,7 @@ void setup() {
   lcd.print("Presiona el botón 3");
   delay(200);
   lcd.clear();
+  
 }
  
 void loop(){
@@ -58,11 +63,12 @@ void preparationPhase() {
   lcd.print("Comenzamos!");
   lcd.setCursor(0,1);
   lcd.print("Presiona el botón 3");
-  delay(200);
+  
   if (buttonIsPressed(actionButtonPin)) {
     lcd.clear();
     displayCurrentCoordinates();
     currentPhase = PLAYER_SHOOT_PHASE;
+    delay(200);
   }
 }
 
@@ -98,27 +104,29 @@ void processNumberButton() {
 
 void processActionButton() {
   if (buttonIsPressed(actionButtonPin)) {
-      if (random(0,1) == 1) {
-        displayResultText("Agua!");  
-      } else {
-        displayResultText("Goiatz & Aretx");  
-      }           
+             
   }
 }
 
 void displayCurrentCoordinates() {
   String currentCoordinates = letters[currentStringIndex-1] + " " + (String) currentNumber;
   if (lastCoordinates != currentCoordinates) {
+    lcd.clear();
     lcd.setCursor(0,1);
     lcd.print(currentCoordinates); 
+    lcd.setCursor(5,1);
+    lcd.print((String) coordinatesToNumber());
   }    
+}
+
+int coordinatesToNumber() {
+  return (NUMBER_OF_LETTERS * (currentStringIndex -1)) + currentNumber;
 }
 
 void displayResultText(String text) {
   lcd.setCursor(0,0);
   lcd.print(text); 
 }
-
 
 int getNextNumberWithLimit(int currentValue, int maxValue) {
   currentValue++;
